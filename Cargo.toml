@@ -1,0 +1,7 @@
+[package]
+name = "rust_bot"
+version = "0.1.0"
+authors = ["Melo"]
+
+[dependencies]
+serenity = "*"
