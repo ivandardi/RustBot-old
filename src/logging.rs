@@ -1,14 +1,16 @@
-use log::{Log, LogRecord, LogLevel, LogMetadata, LogLevelFilter, SetLoggerError};
+use log::{Log, LogRecord, LogLevel, LogMetadata, LogLevelFilter};
 use std::io::{self, Write};
+use error::ResultExt;
+
 
 pub struct Logger;
 
 impl Logger {
-    pub fn init() -> Result<(), SetLoggerError> {
-        ::log::set_logger(|max_log_filter| {
+    pub fn init() -> ::Result<()> {
+        Ok(::log::set_logger(|max_log_filter| {
             max_log_filter.set(LogLevelFilter::Info);
             Box::new(Logger)
-        })
+        })?)
     }
 }
 
@@ -21,6 +23,8 @@ impl Log for Logger {
         if !self.enabled(record.metadata()) {
             return;
         }
-        writeln!(io::stderr(), "[{}]: {}", record.level(), record.args()).unwrap(); // shouldn't ever fail.
+        writeln!(io::stderr(), "[{}]: {}", record.level(), record.args())
+            .chain_err(|| "failed writing to stderr")
+            .unwrap();
     }
 }
