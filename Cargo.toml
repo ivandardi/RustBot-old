@@ -1,7 +1,12 @@
 [package]
 name = "rust_bot"
 version = "0.1.0"
-authors = ["Melo"]
+authors = ["Melo", "acdenisSK <acdenissk69@gmail.com>"]
 
 [dependencies]
-serenity = "*"
+serenity = "0.1.4"
+serde = "0.9.5"
+serde_json = "0.9.4"
+serde_derive = "0.9.5"
+error-chain = "0.8.1"
+log = "0.3.6"
