@@ -1,5 +1,7 @@
 # Misc things
+config.json
 *.iml
+*.bk
 .idea/
 .vscode/
 
