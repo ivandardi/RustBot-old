@@ -4,7 +4,7 @@ version = "0.1.0"
 authors = ["Melo", "acdenisSK <acdenissk69@gmail.com>"]
 
 [dependencies]
-serenity = "0.1.4"
+serenity = "0.1"
 serde = "0.9.5"
 serde_json = "0.9.4"
 serde_derive = "0.9.5"

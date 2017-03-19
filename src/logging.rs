@@ -8,9 +8,9 @@ pub struct Logger;
 impl Logger {
     pub fn init() -> ::Result<()> {
         Ok(::log::set_logger(|max_log_filter| {
-            max_log_filter.set(LogLevelFilter::Info);
-            Box::new(Logger)
-        })?)
+                                 max_log_filter.set(LogLevelFilter::Info);
+                                 Box::new(Logger)
+                             })?)
     }
 }
 
