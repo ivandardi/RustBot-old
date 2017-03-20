@@ -52,7 +52,8 @@ fn actual_main() -> Result<()> {
     client.with_framework(|f| {
         f.configure(|c| c.prefix("?")).group("Meta", |g| {
             g
-            .command("help", |c| c.exec_help(commands::help))
+            .command("help", |c| c
+                .exec_help(commands::help))
             //.command("info", |c| c
             //      .exec(commands::info)
             //      .desc("Shows info about a member"))

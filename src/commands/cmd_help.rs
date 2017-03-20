@@ -24,16 +24,19 @@ pub fn exec_cmd(context: &mut Context,
         // Iterate through the CommandGroup to grab all of the added commands,
         // then append them to the help string
         for (grpname, cmdgrp) in &cmds {
+
+            // Outputs the name of the current group
+            default_help_string = default_help_string.push(grpname.as_str()).push(":\n");
+
             for (name, command) in &cmdgrp.clone().commands {
-                // Outputs the name of the current group
-                default_help_string = default_help_string.push(grpname.as_str()).push(":\n");
                 match *command {
                     Command(ref x) => {
                         match x.desc {
                             Some(ref desc_str) => {
                                 default_help_string =
                                     default_help_string.push("\t").push(name.as_str()).push("\t\t");
-                                default_help_string = default_help_string.push(desc_str.as_str());
+                                default_help_string = default_help_string.push(desc_str.as_str())
+                                    .push("\n");
                             }
                             None => {}
                         }
