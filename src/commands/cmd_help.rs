@@ -19,12 +19,14 @@ pub fn exec_cmd(context: &mut Context,
         // Begin building the message to reply with
         let mut default_help_string =
             MessageBuilder::new().push("```\nHello! I am the community RustBot that \
-                                        assists in managing the Rust server!\n\nMeta:\n");
+                                        assists in managing the Rust server!\n\n");
 
         // Iterate through the CommandGroup to grab all of the added commands,
         // then append them to the help string
         for (_name, cmdgrp) in &cmds {
             for (name, command) in &cmdgrp.clone().commands {
+                // Outputs the name of the current group
+                default_help_string = default_help_string.push(name.as_str()).push(":\n");
                 match *command {
                     Command(ref x) => {
                         match x.desc {
