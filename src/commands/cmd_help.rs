@@ -23,10 +23,10 @@ pub fn exec_cmd(context: &mut Context,
 
         // Iterate through the CommandGroup to grab all of the added commands,
         // then append them to the help string
-        for (_name, cmdgrp) in &cmds {
+        for (grpname, cmdgrp) in &cmds {
             for (name, command) in &cmdgrp.clone().commands {
                 // Outputs the name of the current group
-                default_help_string = default_help_string.push(name.as_str()).push(":\n");
+                default_help_string = default_help_string.push(grpname.as_str()).push(":\n");
                 match *command {
                     Command(ref x) => {
                         match x.desc {
@@ -45,7 +45,7 @@ pub fn exec_cmd(context: &mut Context,
 
         // Finish up the help string
         default_help_string =
-            default_help_string.push("\n\nType ?help command for more info on a command.\n")
+            default_help_string.push("\nType ?help command for more info on a command.\n")
                     .push("You can also type ?help category for more info on a category.```");
 
         if let Err(why) = message.author.direct_message(default_help_string.build().as_str()) {
