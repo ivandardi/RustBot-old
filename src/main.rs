@@ -6,6 +6,7 @@ extern crate serde_derive;
 extern crate error_chain;
 #[macro_use]
 extern crate log;
+#[macro_use]
 extern crate serenity;
 
 extern crate serde_json;
@@ -28,12 +29,12 @@ use commands::START_TIME;
 
 fn main() {
     std::process::exit(match actual_main() {
-                           Ok(_) => 0,
-                           Err(err) => {
-        error!("Error in main: {}", err);
-        1
-    }
-                       });
+        Ok(_) => 0,
+        Err(err) => {
+            error!("Error in main: {}", err);
+            1
+        }
+    });
 }
 
 fn actual_main() -> Result<()> {
@@ -48,26 +49,22 @@ fn actual_main() -> Result<()> {
 
     let config = Config::from_file("config.json")?;
     let mut client = Client::login_bot(&config.token);
+
     client.on_guild_member_add(events::on_member_join);
-    client.with_framework(|f| {
-        f.configure(|c| c.prefix("?")).group("Meta", |g| {
-            g
-            .command("help", |c| c
-                .exec_help(commands::help))
-            //.command("info", |c| c
-            //      .exec(commands::info)
-            //      .desc("Shows info about a member"))
-            //.command("permissions", |c| c
-            //      .exec(commands::permissions)
-            //      .desc("Shows a member's permissions"))
-            //.command("timer", |c| c
-            //      .exec(commands::timer)
-            //      .desc("Reminds you of something after a certain amount of time."))
+
+    client.with_framework(|f| f
+        .configure(|c| c
+            .prefix("?"))
+        .group("Meta", |g| g
+            .command("ping", |c| c
+                .exec(commands::ping)
+                .desc("Checks for connection speed."))
             .command("uptime", |c| c
                 .exec(commands::uptime)
-                .desc("Tells you how long the bot has been up for."))
-        })
-    });
+                .desc("Tells you how long the bot has been up for.")))
+    );
+
     client.start()?;
+
     Ok(())
 }
