@@ -58,9 +58,11 @@ fn actual_main() -> Result<()> {
             .prefix("??"))
         .group("Help", |g| g
             .command("help", |c| c
-                .exec_help(help_commands::with_embeds))
+                .exec_help(help_commands::with_embeds)
+                .desc("Displays a list of the bots command with embeds."))
             .command("helpp", |c| c
-                .exec_help(help_commands::plain)))
+                .exec_help(help_commands::plain)
+                .desc("Displays a list of the bots command in plain text.")))
         .group("Meta", |g| g
             .command("ping", |c| c
                 .exec(commands::ping)
