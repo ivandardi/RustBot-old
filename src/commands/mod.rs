@@ -1,11 +1,9 @@
-mod cmd_help;
-mod cmd_uptime;
-mod cmd_ping;
+mod meta;
+mod moderation;
 
 // Commands
-//pub use self::cmd_help::help;
-pub use self::cmd_uptime::uptime;
-pub use self::cmd_ping::ping;
+pub use self::meta::{uptime, ping};
+pub use self::moderation::{ban};
 
 // Variables
-pub use self::cmd_uptime::START_TIME;
+pub use self::meta::START_TIME;

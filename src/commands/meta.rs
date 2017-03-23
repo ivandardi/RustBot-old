@@ -1,6 +1,5 @@
-use serenity::client::Context;
 use serenity::utils::MessageBuilder;
-use serenity::model::Message;
+
 use std::time::{SystemTime, UNIX_EPOCH};
 
 // Required to save the initial startup time of the bot
@@ -35,4 +34,11 @@ command!(uptime(_context, message,_args) {
         // TODO: log errors
     }
 
+});
+
+
+command!(ping(context,_message,_args) {
+    if let Some(channel) = context.channel_id {
+    let _ = channel.send_message( | m | m.content("Pong!"));
+    }
 });
