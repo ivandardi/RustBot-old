@@ -1,16 +1,16 @@
 #![recursion_limit = "1024"]
 
+
 #[macro_use]
 extern crate serde_derive;
+extern crate serde;
 #[macro_use]
 extern crate error_chain;
 #[macro_use]
 extern crate log;
 #[macro_use]
 extern crate serenity;
-
-extern crate serde_json;
-extern crate serde;
+extern crate toml;
 
 mod error;
 mod config;
@@ -47,7 +47,7 @@ fn actual_main() -> Result<()> {
         START_TIME = SystemTime::now();
     }
 
-    let config = Config::from_file("config.json")?;
+    let config = Config::from_file("config.toml")?;
     let mut client = Client::login_bot(&config.token);
 
     client.with_framework(|f| f
