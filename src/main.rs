@@ -15,7 +15,6 @@ extern crate serde;
 mod error;
 mod config;
 mod logging;
-mod events;
 mod commands;
 
 use error::Result;
@@ -50,8 +49,6 @@ fn actual_main() -> Result<()> {
 
     let config = Config::from_file("config.json")?;
     let mut client = Client::login_bot(&config.token);
-
-    client.on_guild_member_add(events::on_member_join);
 
     client.with_framework(|f| f
         .configure(|c| c
