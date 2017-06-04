@@ -12,21 +12,24 @@ extern crate log;
 extern crate serenity;
 extern crate toml;
 extern crate time;
+extern crate typemap;
+extern crate num_integer;
 
 mod error;
 mod config;
 mod logging;
 mod commands;
+mod uptimer;
+mod typemap_kv;
 
 use error::Result;
 use config::Config;
 use logging::Logger;
+use uptimer::Uptimer;
+use typemap_kv::*;
 
 use serenity::client::Client;
 use serenity::ext::framework::help_commands;
-
-use std::time::SystemTime;
-use commands::START_TIME;
 
 fn main() {
     std::process::exit(match actual_main() {
@@ -42,14 +45,14 @@ fn actual_main() -> Result<()> {
     // todo: add commands
     Logger::init()?;
 
-    // Required to edit static variables,
-    // no actual unsafety as we only ever read the value
-    unsafe {
-        START_TIME = SystemTime::now();
-    }
-
     let config = Config::from_file("config.toml")?;
+
     let mut client = Client::login_bot(&config.token);
+
+    {
+        let mut data = client.data.lock().unwrap();
+        data.insert::<UptimerKey>(Uptimer::new());
+    }
 
     client.with_framework(|f| f
         .configure(|c| c
