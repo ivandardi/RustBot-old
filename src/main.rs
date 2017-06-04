@@ -11,6 +11,7 @@ extern crate log;
 #[macro_use]
 extern crate serenity;
 extern crate toml;
+extern crate time;
 
 mod error;
 mod config;
@@ -67,6 +68,9 @@ fn actual_main() -> Result<()> {
             .command("uptime", |c| c
                 .exec(commands::uptime)
                 .desc("Tells you how long the bot has been up for.")))
+            .command("memberinfo", |c| c
+                .exec(commands::memberinfo)
+                .desc("Displays member info"))
     );
 
     client.start()?;
