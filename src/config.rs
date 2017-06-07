@@ -6,7 +6,7 @@ use toml;
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Config {
-    pub token: String
+    pub token: String,
 }
 
 impl Config {

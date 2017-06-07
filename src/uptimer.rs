@@ -2,7 +2,7 @@ use time::{ Tm, now_utc };
 use num_integer::Integer;
 
 pub struct Uptimer {
-    started_at: Tm
+    started_at: Tm,
 }
 
 impl Uptimer {
