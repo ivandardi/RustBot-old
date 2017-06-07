@@ -1,9 +1,5 @@
-use serenity::utils::{ MessageBuilder, Colour };
-use serenity::model::{ User, UserId };
-
-use time::{ self, Tm, TmFmt };
+use time;
 use typemap_kv::UptimerKey;
-use uptimer::Uptimer;
 
 command!(uptime(ctx, msg) {
     let uptime_string = {
@@ -17,14 +13,14 @@ command!(uptime(ctx, msg) {
               .description(&uptime_string)
         )
     );
-    if let Err(_) = result {
+    if result.is_err() {
         return Err("Failed send message".to_owned());
     }
 });
 
 command!(ping(_ctx, msg) {
     let result = msg.channel_id.send_message(|m| m.content("Pong!"));
-    if let Err(_) = result {
+    if result.is_err() {
         return Err("Failed to send message".to_owned());
     }
 });
@@ -66,7 +62,7 @@ command!(memberinfo(_ctx, msg) {
                 .footer(|cef| cef.text(&footer_text))
                 .image(&avatar_url)
             ));
-            if let Err(_) = result {
+            if result.is_err() {
                 return Err("Failed to send message".to_owned())
             }
         }

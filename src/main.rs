@@ -47,7 +47,7 @@ fn actual_main() -> Result<()> {
 
     let config = Config::from_file("config.toml")?;
 
-    let mut client = Client::login_bot(&config.token);
+    let mut client = Client::login(&config.token);
 
     {
         let mut data = client.data.lock().unwrap();
