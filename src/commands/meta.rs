@@ -1,3 +1,4 @@
+use serenity::utils::Colour;
 use time;
 use typemap_kv::UptimerKey;
 
@@ -11,6 +12,7 @@ command!(uptime(ctx, msg) {
         cm.embed(|ce|
             ce.title("Uptime")
               .description(&uptime_string)
+              .color(Colour::blue())
         )
     );
     if result.is_err() {
@@ -61,6 +63,7 @@ command!(memberinfo(_ctx, msg) {
                 .field(|cef| cef.inline(true).name("Roles").value(&roles))
                 .footer(|cef| cef.text(&footer_text))
                 .image(&avatar_url)
+                .color(Colour::blue())
             ));
             if result.is_err() {
                 return Err("Failed to send message".to_owned())
