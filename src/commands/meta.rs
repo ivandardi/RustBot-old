@@ -1,5 +1,4 @@
 use serenity::utils::Colour;
-use time;
 use typemap_kv::UptimerKey;
 
 command!(uptime(ctx, msg) {
@@ -46,14 +45,18 @@ command!(memberinfo(_ctx, msg) {
                     roles.push_str(", ");
                 }
             }
-            let joined_at = &member.joined_at;
-            let avatar_url = msg.author.avatar_url().unwrap_or_else(|| 
-                msg.author.default_avatar_url()
-            );
+            let joined_at = {
+                if let Some(joined_at) = member.joined_at.as_ref() {
+                    joined_at.naive_utc().format("%c")
+                } else {
+                    return Err("Failed to get Member's joined at".to_owned());
+                }
+            }; 
+            let avatar_url = msg.author.face();
             let id = msg.author.id.0.to_string();
             let nick = member.nick.as_ref().unwrap_or_else(|| &msg.author.name);
-            let dtag = msg.author.distinct();
-            let created_at = time::at_utc(msg.author.created_at()).asctime().to_string();
+            let dtag = msg.author.tag();
+            let created_at = msg.author.created_at().format("%c").to_string();
             let footer_text = format!("Member since {}", joined_at);
             let result = msg.channel_id.send_message(|cm| cm.embed(|ce| 
                 ce.author(|cea| cea.name(&dtag).icon_url(&avatar_url))
