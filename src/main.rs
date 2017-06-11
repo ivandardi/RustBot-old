@@ -71,9 +71,12 @@ fn actual_main() -> Result<()> {
             .command("uptime", |c| c
                 .exec(commands::uptime)
                 .desc("Tells you how long the bot has been up for.")))
-            .command("memberinfo", |c| c
-                .exec(commands::memberinfo)
+            .command("info", |c| c
+                .exec(commands::info)
                 .desc("Displays member info"))
+            .command("permissions", |c| c
+                .exec(commands::permissions)
+                .desc("Displays member permissions"))
     );
 
     client.start()?;

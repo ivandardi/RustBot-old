@@ -1,4 +1,5 @@
 use serenity::utils::Colour;
+use serenity::model::permissions::Permissions;
 use typemap_kv::UptimerKey;
 
 command!(uptime(ctx, msg) {
@@ -26,7 +27,7 @@ command!(ping(_ctx, msg) {
     }
 });
 
-command!(memberinfo(_ctx, msg) {
+command!(info(_ctx, msg) {
     if let Some(guild) = msg.guild() {
         let guild = guild.read().expect("Failed to accuire read lock");
         if let Some(member) = guild.members.get(&msg.author.id) {
@@ -60,6 +61,7 @@ command!(memberinfo(_ctx, msg) {
             let footer_text = format!("Member since {}", joined_at);
             let result = msg.channel_id.send_message(|cm| cm.embed(|ce| 
                 ce.author(|cea| cea.name(&dtag).icon_url(&avatar_url))
+                .title("Info")
                 .field(|cef| cef.inline(true).name("Id").value(&id))
                 .field(|cef| cef.inline(true).name("Current name").value(nick))
                 .field(|cef| cef.inline(true).name("Created at").value(&created_at))
@@ -70,6 +72,110 @@ command!(memberinfo(_ctx, msg) {
             ));
             if result.is_err() {
                 return Err("Failed to send message".to_owned())
+            }
+        }
+    }
+});
+
+// FIXME: For now permissions command ignores permissions granted by `everyone` role, it needs
+// to be fixed somehow.
+command!(permissions(_ctx, msg) {
+    if let Some(guild) = msg.guild() {
+        let guild = guild.read().expect("Failed to accuire Guild RwLock");
+        if let Some(member) = guild.members.get(&msg.author.id) {
+            let member_user_id = {
+                let user = member.user.read().expect("Failed to accuire User RwLock");
+                user.id
+            };
+            let permissions = if guild.owner_id == member_user_id {
+                Permissions::all()
+            } else {
+                let mut permissions = Permissions::empty();
+                for role_id in &member.roles {
+                    if let Some(role) = role_id.find() {
+                        permissions |= role.permissions;
+                    } else {
+                        // NOTE: I'm unsure if it's an error when role_id doesn't have corresponding 
+                        // role. For now I consider this error. 
+                        return Err("Failed to get Role for RoleId".to_owned());
+                    }
+                }
+                if permissions.administrator() {
+                    permissions = Permissions::all();
+                }
+                permissions
+            };
+            
+            let result = msg.channel_id.send_message(|cm| cm.embed(|ce|
+                ce.title("Permissions")
+                  .color(Colour::blue())
+                  .description(
+                    // TODO: Do something with this ugly format macro invocation.
+                    &format!(
+                        concat!(
+                            "Add reactions: {}\n",
+                            "Administrator: {}\n",
+                            "Attach files: {}\n",
+                            "Ban members: {}\n",
+                            "Change nickname: {}\n",
+                            "Connect: {}\n",
+                            "Create invite: {}\n",
+                            "Deafen members: {}\n",
+                            "Embed links: {}\n",
+                            "External emojis: {}\n",
+                            "Kick members: {}\n",
+                            "Manage channels: {}\n",
+                            "Manage emojis: {}\n",
+                            "Manage guild: {}\n",
+                            "Manage messages: {}\n",
+                            "Manage nicknames: {}\n",
+                            "Manage roles: {}\n",
+                            "Manage webhooks: {}\n",
+                            "Mention everyone: {}\n",
+                            "Move members: {}\n",
+                            "Mute members: {}\n",
+                            "Read message history: {}\n",
+                            "Read messages: {}\n",
+                            "Send messages: {}\n",
+                            "Send TTS messages: {}\n",
+                            "Speak: {}\n",
+                            "Use external emojis: {}\n",
+                            "Use VAD: {}\n"
+                        ),
+                        permissions.add_reactions(),
+                        permissions.administrator(),
+                        permissions.attach_files(),
+                        permissions.ban_members(),
+                        permissions.change_nickname(),
+                        permissions.connect(),
+                        permissions.create_invite(),
+                        permissions.deafen_members(),
+                        permissions.embed_links(),
+                        permissions.external_emojis(),
+                        permissions.kick_members(),
+                        permissions.manage_channels(),
+                        permissions.manage_emojis(),
+                        permissions.manage_guild(),
+                        permissions.manage_messages(),
+                        permissions.manage_nicknames(),
+                        permissions.manage_roles(),
+                        permissions.manage_webhooks(),
+                        permissions.mention_everyone(),
+                        permissions.move_members(),
+                        permissions.mute_members(),
+                        permissions.read_message_history(),
+                        permissions.read_messages(),
+                        permissions.send_messages(),
+                        permissions.send_tts_messages(),
+                        permissions.speak(),
+                        permissions.use_external_emojis(),
+                        permissions.use_vad()
+                    )
+                )
+            ));
+
+            if result.is_err() {
+                return Err("Failed to send message".to_owned());
             }
         }
     }
