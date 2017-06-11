@@ -1,5 +1,6 @@
 use serenity::utils::Colour;
 use serenity::model::permissions::Permissions;
+use serenity::model::RoleId;
 use typemap_kv::UptimerKey;
 
 command!(uptime(ctx, msg) {
@@ -77,8 +78,6 @@ command!(info(_ctx, msg) {
     }
 });
 
-// FIXME: For now permissions command ignores permissions granted by `everyone` role, it needs
-// to be fixed somehow.
 command!(permissions(_ctx, msg) {
     if let Some(guild) = msg.guild() {
         let guild = guild.read().expect("Failed to accuire Guild RwLock");
@@ -90,7 +89,9 @@ command!(permissions(_ctx, msg) {
             let permissions = if guild.owner_id == member_user_id {
                 Permissions::all()
             } else {
-                let mut permissions = Permissions::empty();
+                // NOTE: Next line is unobvious at first glance. Actually it gets @everyone
+                // role permissions. This role promised to have same id as guild.
+                let mut permissions = guild.roles.get(&RoleId(guild.id.0)).unwrap().permissions;
                 for role_id in &member.roles {
                     if let Some(role) = role_id.find() {
                         permissions |= role.permissions;
