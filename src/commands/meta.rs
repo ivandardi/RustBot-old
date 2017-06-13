@@ -104,71 +104,54 @@ command!(permissions(_ctx, msg) {
                 }
                 permissions
             };
+
+            macro_rules! format_permissions {
+                ($perms:ident, $($text:expr => $method:ident),+) => {
+                    format!(
+                        concat!(
+                            $(
+                                concat!($text, ": {}\n")
+                            ),+
+                        ),
+                        $(
+                            $perms.$method()
+                        ),+
+                    )
+                }
+            }
             
             let result = msg.channel_id.send_message(|cm| cm.embed(|ce|
                 ce.title("Permissions")
-                  .color(Colour::blue())
-                  .description(
-                    // TODO: Do something with this ugly format macro invocation.
-                    &format!(
-                        concat!(
-                            "Add reactions: {}\n",
-                            "Administrator: {}\n",
-                            "Attach files: {}\n",
-                            "Ban members: {}\n",
-                            "Change nickname: {}\n",
-                            "Connect: {}\n",
-                            "Create invite: {}\n",
-                            "Deafen members: {}\n",
-                            "Embed links: {}\n",
-                            "External emojis: {}\n",
-                            "Kick members: {}\n",
-                            "Manage channels: {}\n",
-                            "Manage emojis: {}\n",
-                            "Manage guild: {}\n",
-                            "Manage messages: {}\n",
-                            "Manage nicknames: {}\n",
-                            "Manage roles: {}\n",
-                            "Manage webhooks: {}\n",
-                            "Mention everyone: {}\n",
-                            "Move members: {}\n",
-                            "Mute members: {}\n",
-                            "Read message history: {}\n",
-                            "Read messages: {}\n",
-                            "Send messages: {}\n",
-                            "Send TTS messages: {}\n",
-                            "Speak: {}\n",
-                            "Use external emojis: {}\n",
-                            "Use VAD: {}\n"
-                        ),
-                        permissions.add_reactions(),
-                        permissions.administrator(),
-                        permissions.attach_files(),
-                        permissions.ban_members(),
-                        permissions.change_nickname(),
-                        permissions.connect(),
-                        permissions.create_invite(),
-                        permissions.deafen_members(),
-                        permissions.embed_links(),
-                        permissions.external_emojis(),
-                        permissions.kick_members(),
-                        permissions.manage_channels(),
-                        permissions.manage_emojis(),
-                        permissions.manage_guild(),
-                        permissions.manage_messages(),
-                        permissions.manage_nicknames(),
-                        permissions.manage_roles(),
-                        permissions.manage_webhooks(),
-                        permissions.mention_everyone(),
-                        permissions.move_members(),
-                        permissions.mute_members(),
-                        permissions.read_message_history(),
-                        permissions.read_messages(),
-                        permissions.send_messages(),
-                        permissions.send_tts_messages(),
-                        permissions.speak(),
-                        permissions.use_external_emojis(),
-                        permissions.use_vad()
+                .color(Colour::blue())
+                .description(
+                    &format_permissions!(permissions,
+                        "Add reactions" => add_reactions,
+                        "Administrator" => administrator,
+                        "Ban members" => ban_members,
+                        "Change nickname" => change_nickname,
+                        "Connect" => connect,
+                        "Create invite" => create_invite,
+                        "Deafen members" => deafen_members,
+                        "Embed links" => embed_links,
+                        "External emojis" => external_emojis,
+                        "Kick members" => kick_members,
+                        "Manage channels" => manage_channels,
+                        "Manage emojis" => manage_emojis,
+                        "Manage guild" => manage_guild,
+                        "Manage messages" => manage_messages,
+                        "Manage nicknames" => manage_nicknames,
+                        "Manage roles" => manage_roles,
+                        "Manage webhooks" => manage_webhooks,
+                        "Mention everyone" => mention_everyone,
+                        "Move members" => move_members,
+                        "Mute members" => mute_members,
+                        "Read message history" => read_message_history,
+                        "Read messages" => read_messages,
+                        "Send messages" => send_messages,
+                        "Send TTS messages" => send_tts_messages,
+                        "Speak" => speak,
+                        "Use external emojis" => use_external_emojis,
+                        "Use VAD" => use_vad
                     )
                 )
             ));
