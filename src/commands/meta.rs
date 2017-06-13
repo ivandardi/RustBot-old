@@ -32,19 +32,17 @@ command!(info(_ctx, msg) {
     if let Some(guild) = msg.guild() {
         let guild = guild.read().expect("Failed to accuire read lock");
         if let Some(member) = guild.members.get(&msg.author.id) {
-            let mut roles = String::new();
-            let mut iter = member.roles.iter().peekable();
+            // NOTE: \u200b is zero-width whitespace.
+            let mut roles = "@every\u{200b}one".to_owned(); 
+            let mut iter = member.roles.iter();
             while let Some(role_id) = iter.next() {
                 if let Some(role) = role_id.find() {
+                    roles.push_str(", ");
                     roles.push_str(&role.name);
                 } else {
                     // NOTE: I'm unsure if it's an error when role_id doesn't have corresponding 
                     // role. For now I consider this error. 
                     return Err("Failed to get Role for RoleId".to_owned());
-                }
-
-                if iter.peek().is_some() {
-                    roles.push_str(", ");
                 }
             }
             let joined_at = {
