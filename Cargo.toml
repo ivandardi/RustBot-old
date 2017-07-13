@@ -2,8 +2,8 @@
 name = "rust_bot"
 version = "0.1.0"
 authors = [
-    "Ivan Dardi <ivy.dardi at gmail.com",
-    "acdenisSK <acdenissk69@gmail.com>"
+    "Ivan Dardi <ivy.dardi at gmail.com>",
+    "acdenisSK <acdenissk69@gmail.com>",
 ]
 
 [dependencies]

@@ -5,15 +5,15 @@ use typemap_kv::UptimerKey;
 
 command!(uptime(ctx, msg) {
     let uptime_string = {
-        let data = ctx.data.lock().expect("Failed to accuire lock");
+        let data = ctx.data.lock().expect("Failed to acquire lock");
         let uptimer = data.get::<UptimerKey>().expect("Failed to get Uptimer");
         uptimer.uptime_string()
     };
     let result = msg.channel_id.send_message(|cm| 
-        cm.embed(|ce|
-            ce.title("Uptime")
-              .description(&uptime_string)
-              .color(Colour::blue())
+        cm.embed(|ce| ce
+            .title("Uptime")
+            .description(&uptime_string)
+            .color(Colour::blue())
         )
     );
     if result.is_err() {
@@ -30,7 +30,7 @@ command!(ping(_ctx, msg) {
 
 command!(info(_ctx, msg) {
     if let Some(guild) = msg.guild() {
-        let guild = guild.read().expect("Failed to accuire read lock");
+        let guild = guild.read().expect("Failed to acquire read lock");
         if let Some(member) = guild.members.get(&msg.author.id) {
             // NOTE: \u200b is zero-width whitespace.
             let mut roles = "@every\u{200b}one".to_owned(); 
@@ -78,10 +78,10 @@ command!(info(_ctx, msg) {
 
 command!(permissions(_ctx, msg) {
     if let Some(guild) = msg.guild() {
-        let guild = guild.read().expect("Failed to accuire Guild RwLock");
+        let guild = guild.read().expect("Failed to acquire Guild RwLock");
         if let Some(member) = guild.members.get(&msg.author.id) {
             let member_user_id = {
-                let user = member.user.read().expect("Failed to accuire User RwLock");
+                let user = member.user.read().expect("Failed to acquire User RwLock");
                 user.id
             };
             let permissions = if guild.owner_id == member_user_id {

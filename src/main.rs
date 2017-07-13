@@ -53,6 +53,7 @@ fn actual_main() -> Result<()> {
         data.insert::<UptimerKey>(Uptimer::new());
     }
 
+    #[cfg_attr(rustfmt, rustfmt_skip)]
     client.with_framework(|f| f
         .configure(|c| c
             .prefix("??"))
