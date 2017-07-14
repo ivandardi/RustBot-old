@@ -19,16 +19,18 @@ mod config;
 mod logging;
 mod commands;
 mod uptimer;
-mod typemap_kv;
 
 use error::Result;
 use config::Config;
 use logging::Logger;
-use uptimer::Uptimer;
-use typemap_kv::*;
+use uptimer::{UptimerKey, Uptimer};
 
-use serenity::client::Client;
+use serenity::prelude::*;
 use serenity::ext::framework::help_commands;
+
+struct Handler;
+
+impl EventHandler for Handler {}
 
 fn main() {
     std::process::exit(match actual_main() {
@@ -40,23 +42,29 @@ fn main() {
     });
 }
 
+
 fn actual_main() -> Result<()> {
     // todo: add commands
     Logger::init()?;
 
     let config = Config::from_file("config.toml")?;
 
-    let mut client = Client::new(&config.token);
+    let mut client = Client::new(&config.token, Handler);
 
     {
-        let mut data = client.data.lock().unwrap();
+        let mut data = client.data.lock();
         data.insert::<UptimerKey>(Uptimer::new());
     }
 
     #[cfg_attr(rustfmt, rustfmt_skip)]
     client.with_framework(|f| f
         .configure(|c| c
-            .prefix("??"))
+            .prefix("??")
+            .on_mention(true))
+        .before(|_ctx, msg, command_name| {
+            info!("{} in {}: {}", msg.author.name, msg.channel_id.name().expect("Channel Name"), command_name);
+            true
+        })
         .group("Help", |g| g
             .command("help", |c| c
                 .exec_help(help_commands::with_embeds)
@@ -70,13 +78,10 @@ fn actual_main() -> Result<()> {
                 .desc("Checks for connection speed."))
             .command("uptime", |c| c
                 .exec(commands::uptime)
-                .desc("Tells you how long the bot has been up for.")))
+                .desc("Tells you how long the bot has been up for."))
             .command("info", |c| c
                 .exec(commands::info)
-                .desc("Displays member info"))
-            .command("permissions", |c| c
-                .exec(commands::permissions)
-                .desc("Displays member permissions"))
+                .desc("Displays member info")))
     );
 
     client.start()?;

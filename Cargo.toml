@@ -13,7 +13,7 @@ error-chain = "0.8.1"
 log = "0.3.6"
 toml = "0.4.1"
 time = "0.1.37"
-chrono = "0.3.1"
+chrono = "0.4.0"
 typemap = "0.3.3"
 num-integer = "0.1.32"
 

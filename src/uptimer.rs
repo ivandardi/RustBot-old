@@ -1,5 +1,12 @@
 use time::{self, Tm};
 use num_integer::Integer;
+use typemap::Key;
+
+pub struct UptimerKey;
+
+impl Key for UptimerKey {
+    type Value = Uptimer;
+}
 
 pub struct Uptimer {
     started_at: Tm,
